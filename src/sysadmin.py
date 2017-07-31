@@ -35,10 +35,15 @@ def parse_ncsa_log(path):
         return finditer(regex, text)
 
     if path is None or not exists(path):
-        return []
+        raise StopIteration
 
     with open(path, 'r') as f:
-        return [m.groupdict() for m in parse(f.read())]
+        for m in parse(f.read()):
+            if m is None:
+                yield None
+            else:
+                yield m.groupdict()
+    raise StopIteration
 
 def get_page(url):
     r = requests.get(url)
@@ -56,9 +61,9 @@ def tpc_server(port):
 
 if __name__ == '__main__':
     if len(sys.argv) <= 1:
-        print 'Usage: sysadmin.py PATH'
+        print('Usage: sysadmin.py PATH')
         sys.exit(1)
     else:
         arg = sys.argv[1]
         for x in list_all_files(arg):
-            print x
+            print(x)
