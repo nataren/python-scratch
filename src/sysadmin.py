@@ -6,6 +6,9 @@ from os.path import isdir
 from os.path import isfile
 import sys
 import requests
+import re
+from re import compile
+from re import finditer
 
 def list_all_files(path):
     if path is None:
@@ -25,25 +28,17 @@ def list_all_files(path):
 
 # Sample: 127.0.0.1 user-identifier frank [10/Oct/2000:13:55:36 -0700] "GET /apache_pb.gif HTTP/1.0" 200 2326
 
-match(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\s+(\w+)\s+(\w+)\s+\[(\d{1,2})/(\w+)/([\w\s\-:]+)\]\s+"(\w+)\s+([/\w\.]+)\s+([\w/\.]+)"\s+(\d{3,3})\s+(\d+)', '192.168.0.2 userid frank [12/Oct/2000:13:55:36 -0700] "GET /apache_pb.gif HTTP/1.0" 200 2326')
+regex = compile(r'^(?P<ip>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\s+(?P<userid>[\w-]+)\s+(?P<username>\w+)\s+\[(?P<dt>(\d{1,2})/(\w+)/([\w\s\-:]+))\]\s+"(?P<verb>\w+)\s+(?P<route>[/\w\.]+)\s+(?P<protocol>[\w\/\.]+)"\s+(?P<status>\d{3})\s+(?P<bytecount>\d+)$', re.M)
 
 def parse_ncsa_log(path):
-    regex = r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\s+(\w+)\s+(\w+)\s+\[(\d{1,2})/(\w+)/([\w\s\-:]+)\]\s+"(\w+)\s+([/\w\.]+)\s+([\w/\.]+)"\s+(\d{3,3})\s+(\d+)', '192.168.0.2 userid frank [12/Oct/2000:13:55:36 -0700] "GET /apache_pb.gif HTTP/1.0" 200 2326'
-
     def parse(text):
-        m = search(regex, text)
-        if m is not None:
-            m.groups()
-        return None
+        return finditer(regex, text)
 
     if path is None or not exists(path):
-        raise StopIteration
+        return []
 
     with open(path, 'r') as f:
-        for line in f:
-            yield parse(line)
-
-    raise StopIteration
+        return [m.groupdict() for m in parse(f.read())]
 
 def get_page(url):
     r = requests.get(url)
