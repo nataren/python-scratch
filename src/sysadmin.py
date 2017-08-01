@@ -49,8 +49,24 @@ def get_page(url):
     r = requests.get(url)
     return r.status_code == 200
 
-def post_page(url):
-    pass
+def post_page(url, **kwargs):
+    return requests.post(url, **kwargs)
+
+# f: A -> B
+# memoize returns a new function, f': A -B
+# that's almost like f except it also caches its results
+def memoize(f):
+    cache = {}
+    func = f
+    def wrapper(a):
+        cached = cache.get(a)
+        if cached is not None:
+            return cached
+        val = func(a)
+        cache[a] = val
+        return val
+    return wrapper
+
 
 def manipulate_json(url):
     pass
