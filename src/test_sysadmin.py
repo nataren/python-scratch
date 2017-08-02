@@ -2,6 +2,8 @@ import unittest
 from sysadmin import list_all_files
 from sysadmin import get_page
 from sysadmin import memoize
+from sysadmin import factorial
+from random import randrange
 
 class TestListAllFiles(unittest.TestCase):
     def test_does_not_crash_on_empty_path(self):
@@ -22,6 +24,22 @@ class TestListAllFiles(unittest.TestCase):
             self.assertEqual(i*2, memoized(i))
         for i in range(0, 10):
             self.assertEqual(i*2, memoized(i))
+
+class TestMemoize(unittest.TestCase):
+    def test_memoize_on_random_generator(self):
+        rangen = memoize(randrange)
+        val3 = randrange(1000)
+        val2 = rangen(1000)
+        self.assertEqual(val2, val3)
+        val1 = rangen(1000)
+        self.assertEqual(val1, val2)
+
+
+    def test_memoized_factorial(self):
+        mfact = memoize(factorial)
+        for x in range(2, 102):
+            for i in range(2, 5):
+                self.assertEqual(mfact(x), factorial(x))
 
 if __name__ == '__main__':
     unittest.main()

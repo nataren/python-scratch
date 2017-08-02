@@ -9,6 +9,7 @@ import requests
 import re
 from re import compile
 from re import finditer
+import random
 
 def list_all_files(path):
     if path is None:
@@ -67,6 +68,29 @@ def memoize(f):
         return val
     return wrapper
 
+def randgen(seed):
+    random.seed(seed)
+    return random.random()
+
+def boolean_id(b):
+    return b
+
+def boolean_neg(b):
+    return not b
+
+def boolean_absurdity_1(b):
+    return True
+
+def boolean_absurdity_2(b):
+    return False
+
+def factorial(n):
+    if n <= 1:
+        return 1
+    acc = 1
+    for i in range(0, n):
+        acc *= i+1
+    return acc
 
 def manipulate_json(url):
     pass
