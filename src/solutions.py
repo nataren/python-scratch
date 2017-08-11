@@ -6,7 +6,7 @@
 # Naive aproach O(n^2)
 # For each element on list, for each element on the list that is not itself, does it add up to it?
 
-def indices_that_add_to_target(nums, target):
+def indices_that_add_to_target_cuadratic(nums, target):
     n = len(nums)
     for i in range(0, n):
         current = nums[i]
@@ -16,4 +16,17 @@ def indices_that_add_to_target(nums, target):
             pair = nums[j]
             if current + pair == target:
                 return [i, j]
+    raise Exception("Didn't find a solution")
+
+def indices_that_add_to_target_linear(nums, target):
+    n = len(nums)
+    complements = {}
+    for i in range(0, n):
+        current = nums[i]
+        looking_for = target - current
+        complement_index = complements.get(looking_for)
+        if complement_index is None:
+            complements[current] = i
+        else:
+            return [complement_index, i]
     raise Exception("Didn't find a solution")
