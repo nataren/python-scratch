@@ -1,5 +1,8 @@
 import random
 
+def comp(f, g):
+    return lambda x: g(f(x))
+
 # f: A -> B
 # memoize returns a new function, f': A -B
 # that's almost like f except it also caches its results
