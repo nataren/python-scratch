@@ -16,8 +16,7 @@ def generate(phrase):
         return mappend(generate, phrase)
     elif phrase in grammar:
         return generate(choice(grammar[phrase]))
-    else:
-        return [phrase]
+    else: return [phrase]
 
 def generate_tree(phrase):
     if isinstance(phrase, list):
